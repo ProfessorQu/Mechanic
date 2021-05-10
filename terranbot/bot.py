@@ -1,55 +1,25 @@
-from typing import List, Optional
-
+from sharpy.plans.acts import *
+from sharpy.plans.acts.terran import *
+from sharpy.plans.require import *
+from sharpy.plans.tactics import *
+from sharpy.plans.tactics.terran import *
+from sharpy.plans import BuildOrder, Step, SequentialList, StepBuildGas
+from sharpy.knowledges import KnowledgeBot
 from sc2 import UnitTypeId
-from sharpy.combat.group_combat_manager import GroupCombatManager
-from sharpy.knowledges import SkeletonBot
-from sharpy.managers import ManagerBase
-from sharpy.managers.core import *
-from sharpy.managers.extensions import MemoryManager
-from sharpy.plans.terran import *
+import random
 
 
-
-class TerranBot(SkeletonBot):
+class TerranBot(KnowledgeBot):
     def __init__(self):
-        super().__init__("Terran Template")
+        super().__init__("TerranBot")
 
-    def configure_managers(self) -> Optional[List[ManagerBase]]:
-        return [
-            MemoryManager(),
-            PreviousUnitsManager(),
-            LostUnitsManager(),
-            EnemyUnitsManager(),
-            UnitCacheManager(),
-            UnitValue(),
-            UnitRoleManager(),
-            PathingManager(),
-            ZoneManager(),
-            BuildingSolver(),
-            IncomeCalculator(),
-            CooldownManager(),
-            GroupCombatManager(),
-            GatherPointSolver(),
-            ActManager(self.create_plan()),
-        ]
+    async def pre_step_execute(self):
+        pass
 
-    def create_plan(self) -> ActBase:
-        return BuildOrder(
-            Expand(1),  # expand if we run out of minerals in main
-            AutoWorker(),
-            AutoDepot(),
-            TerranUnit(UnitTypeId.MARINE, priority=True),
-            GridBuilding(UnitTypeId.BARRACKS, 5),
-            DistributeWorkers(),
+    async def create_plan(self) -> BuildOrder:
+        return BuildOrder([
+            Step(None, GridBuilding(UnitTypeId.SUPPLYDEPOT, 10)),
+            Step(None, ActUnit(UnitTypeId.SCV, UnitTypeId.COMMANDCENTER, 10)),
+            Expand(1),
             LowerDepots(),
-            # Have the combat units gather in one place
-            PlanZoneGather(),
-            # Defend
-            PlanZoneDefense(),
-            SequentialList(
-                # Attack, these 2 should be last in a sequential list in this order
-                PlanZoneAttack(5,),
-                # Roam the map until last building is found.
-                PlanFinishEnemy(),
-            )
-        )
+        ])
