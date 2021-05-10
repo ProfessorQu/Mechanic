@@ -1,0 +1,39 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run - Realtime",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_custom.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m",
+                "DeathAura506",
+                "-p1",
+                "terranbot",
+                "-p2",
+                "ai",
+                "-rt"
+            ]
+        },
+        {
+            "name": "Run - Speed",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_custom.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m",
+                "DeathAura506",
+                "-p1",
+                "terranbot",
+                "-p2",
+                "ai"
+            ]
+        }
+    ]
+}
