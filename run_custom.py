@@ -1,7 +1,7 @@
 import os
 import sub_module  # Important, do not remove!
 
-from terranbot.bot import TerranBot
+from mechanic.bot import Mechanic
 from sc2 import Race
 from sc2.player import Bot
 
@@ -11,7 +11,7 @@ from version import update_version_txt
 
 def add_definitions(definitions: BotDefinitions):
     definitions.add_bot(
-        "terranbot", lambda params: Bot(Race.Terran, TerranBot()), None
+        "terranbot", lambda params: Bot(Race.Terran, Mechanic()), None
     )
 
 
