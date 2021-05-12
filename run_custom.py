@@ -11,7 +11,7 @@ from version import update_version_txt
 
 def add_definitions(definitions: BotDefinitions):
     definitions.add_bot(
-        "terranbot", lambda params: Bot(Race.Terran, Mechanic()), None
+        "mechanic", lambda params: Bot(Race.Terran, Mechanic()), None
     )
 
 

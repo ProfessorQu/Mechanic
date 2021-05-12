@@ -14,7 +14,7 @@
                 "-m",
                 "DeathAura506",
                 "-p1",
-                "terranbot",
+                "mechanic",
                 "-p2",
                 "ai",
                 "-rt"
@@ -30,7 +30,7 @@
                 "-m",
                 "DeathAura506",
                 "-p1",
-                "terranbot",
+                "mechanic",
                 "-p2",
                 "ai"
             ]
