@@ -1,6 +1,10 @@
-from sharpy.plans.require import *
-from sharpy.plans.terran import *
-from sharpy.plans import BuildOrder, Step, SequentialList, StepBuildGas
+from sharpy.plans.require import UnitExists
+from sharpy.plans.terran import MorphOrbitals, GridBuilding, BuildGas,\
+    BuildAddon, AutoWorker, AutoDepot, LowerDepots, Repair, DistributeWorkers,\
+    ContinueBuilding, CallMule, WorkerScout, Time, ScanEnemy,\
+    PlanCancelBuilding, PlanZoneGatherTerran, PlanZoneDefense, PlanZoneAttack,\
+    PlanFinishEnemy, TerranUnit
+from sharpy.plans import BuildOrder, Step, SequentialList
 from sharpy.knowledges import KnowledgeBot
 
 from sc2 import UnitTypeId
@@ -18,12 +22,16 @@ class BuildMech(BuildOrder):
             GridBuilding(UnitTypeId.SUPPLYDEPOT, 1, priority=True),
             BuildGas(1),
             GridBuilding(UnitTypeId.BARRACKS, 1),
-            BuildAddon(UnitTypeId.BARRACKSTECHLAB, UnitTypeId.BARRACKS, 1),
+            BuildAddon(UnitTypeId.BARRACKSREACTOR, UnitTypeId.BARRACKS, 1),
+            TerranUnit(UnitTypeId.MARINE, 2),
             GridBuilding(UnitTypeId.FACTORY, 1),
-            PlanAddonSwap(factory_techlab_count=1),
-            Step(None, ExecuteAddonSwap(),
-                 skip_until=UnitReady(UnitTypeId.FACTORY, 1)),
-            GridBuilding(UnitTypeId.FACTORY, 2),
+            BuildAddon(UnitTypeId.FACTORYREACTOR, UnitTypeId.FACTORY, 1),
+            TerranUnit(UnitTypeId.CYCLONE, 3),
+            GridBuilding(UnitTypeId.FACTORY, 3),
+            BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 2),
+            TerranUnit(UnitTypeId.SIEGETANK, 2),
+            TerranUnit(UnitTypeId.MARINE, 20),
+            TerranUnit(UnitTypeId.SIEGETANK, 10),
         ]
 
         super().__init__([AutoWorker(), AutoDepot(), scv, opener])
