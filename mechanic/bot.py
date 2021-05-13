@@ -3,7 +3,7 @@ from sharpy.plans.terran import MorphOrbitals, GridBuilding, BuildGas,\
     BuildAddon, AutoWorker, AutoDepot, LowerDepots, Repair, DistributeWorkers,\
     ContinueBuilding, CallMule, WorkerScout, Time, ScanEnemy,\
     PlanCancelBuilding, PlanZoneGatherTerran, PlanZoneDefense, PlanZoneAttack,\
-    PlanFinishEnemy, TerranUnit
+    PlanFinishEnemy, TerranUnit, Expand
 from sharpy.plans import BuildOrder, Step, SequentialList
 from sharpy.knowledges import KnowledgeBot
 
@@ -22,19 +22,31 @@ class BuildMech(BuildOrder):
             GridBuilding(UnitTypeId.SUPPLYDEPOT, 1, priority=True),
             BuildGas(1),
             GridBuilding(UnitTypeId.BARRACKS, 1),
-            BuildAddon(UnitTypeId.BARRACKSREACTOR, UnitTypeId.BARRACKS, 1),
-            TerranUnit(UnitTypeId.MARINE, 2),
             GridBuilding(UnitTypeId.FACTORY, 1),
-            BuildAddon(UnitTypeId.FACTORYREACTOR, UnitTypeId.FACTORY, 1),
-            TerranUnit(UnitTypeId.CYCLONE, 3),
-            GridBuilding(UnitTypeId.FACTORY, 3),
+            BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 1),
+            BuildGas(2),
+            GridBuilding(UnitTypeId.STARPORT, 1),
+            BuildAddon(UnitTypeId.STARPORTTECHLAB, UnitTypeId.STARPORT, 1),
+            Step(None, GridBuilding(UnitTypeId.FACTORY, 2),
+                 skip_until=UnitExists(UnitTypeId.CYCLONE)),
             BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 2),
-            TerranUnit(UnitTypeId.SIEGETANK, 2),
-            TerranUnit(UnitTypeId.MARINE, 20),
-            TerranUnit(UnitTypeId.SIEGETANK, 10),
+            Expand(1),
+            BuildGas(4),
+            GridBuilding(UnitTypeId.FACTORY, 3),
+            BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 3),
         ]
 
-        super().__init__([AutoWorker(), AutoDepot(), scv, opener])
+        units = [
+            BuildOrder(
+                TerranUnit(UnitTypeId.MARINE, 10),
+            ),
+            BuildOrder(
+                TerranUnit(UnitTypeId.CYCLONE, 2),
+                TerranUnit(UnitTypeId.SIEGETANK, 4),
+            ),
+        ]
+
+        super().__init__([AutoWorker(), AutoDepot(), scv, opener, units])
 
 
 class Mechanic(KnowledgeBot):
@@ -72,7 +84,7 @@ class Mechanic(KnowledgeBot):
             PlanZoneDefense(),
 
             # Attack and Finish the enemy
-            PlanZoneAttack(5,),
+            PlanZoneAttack(),
             PlanFinishEnemy(),
         ]
 
