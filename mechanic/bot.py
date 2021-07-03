@@ -3,7 +3,7 @@ from sharpy.plans.terran import MorphOrbitals, GridBuilding, BuildGas,\
     BuildAddon, AutoWorker, AutoDepot, LowerDepots, Repair, DistributeWorkers,\
     ContinueBuilding, CallMule, WorkerScout, Time, ScanEnemy,\
     PlanCancelBuilding, PlanZoneGatherTerran, PlanZoneDefense, PlanZoneAttack,\
-    PlanFinishEnemy, TerranUnit, Expand
+    PlanFinishEnemy, TerranUnit, Expand, UnitReady
 from sharpy.plans import BuildOrder, Step, SequentialList
 from sharpy.knowledges import KnowledgeBot
 
@@ -13,40 +13,37 @@ from sc2 import UnitTypeId
 class BuildMech(BuildOrder):
     def __init__(self):
 
-        scv = [
-            Step(None, MorphOrbitals(),
-                 skip_until=UnitExists(UnitTypeId.BARRACKS, 1)),
-        ]
-
-        opener = [
-            GridBuilding(UnitTypeId.SUPPLYDEPOT, 1, priority=True),
-            BuildGas(1),
-            GridBuilding(UnitTypeId.BARRACKS, 1),
-            GridBuilding(UnitTypeId.FACTORY, 1),
-            BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 1),
-            BuildGas(2),
-            GridBuilding(UnitTypeId.STARPORT, 1),
-            BuildAddon(UnitTypeId.STARPORTTECHLAB, UnitTypeId.STARPORT, 1),
-            Step(None, GridBuilding(UnitTypeId.FACTORY, 2),
-                 skip_until=UnitExists(UnitTypeId.CYCLONE)),
-            BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 2),
-            Expand(1),
-            BuildGas(4),
-            GridBuilding(UnitTypeId.FACTORY, 3),
-            BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 3),
-        ]
-
-        units = [
-            BuildOrder(
-                TerranUnit(UnitTypeId.MARINE, 10),
-            ),
-            BuildOrder(
+        build = [
+            AutoWorker(),
+            AutoDepot(),
+            [
+                Step(UnitReady(UnitTypeId.BARRACKS), MorphOrbitals()),
+            ],
+            [
+                GridBuilding(UnitTypeId.SUPPLYDEPOT, 1, priority=True),
+                BuildGas(1),
+                GridBuilding(UnitTypeId.BARRACKS, 1),
+                GridBuilding(UnitTypeId.FACTORY, 1),
+                BuildGas(2),
+                BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 1),
+                Expand(2, priority=True),
+                GridBuilding(UnitTypeId.STARPORT, 1),
+                BuildAddon(UnitTypeId.STARPORTTECHLAB, UnitTypeId.STARPORT, 1),
+                Step(None, GridBuilding(UnitTypeId.FACTORY, 2),
+                     skip_until=UnitExists(UnitTypeId.CYCLONE)),
+                BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 2),
+                BuildGas(4),
+                GridBuilding(UnitTypeId.FACTORY, 3),
+                BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 3),
+            ],
+            [
+                TerranUnit(UnitTypeId.MARINE, 4),
                 TerranUnit(UnitTypeId.CYCLONE, 2),
                 TerranUnit(UnitTypeId.SIEGETANK, 4),
-            ),
+            ]
         ]
 
-        super().__init__([AutoWorker(), AutoDepot(), scv, opener, units])
+        super().__init__(build)
 
 
 class Mechanic(KnowledgeBot):
