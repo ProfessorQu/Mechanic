@@ -2,9 +2,9 @@ from ladder import run_ladder_game
 
 from sc2 import Race
 from sc2.player import Bot
-from terranbot.bot import TerranBot
+from mechanic.bot import Mechanic
 
-bot = Bot(Race.Terran, TerranBot())
+bot = Bot(Race.Terran, Mechanic())
 
 
 def main():
